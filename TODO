@@ -1,0 +1,9 @@
+- Logging
+- Observability
+- CI/CD
+- Improve error handling and retries with face-encoding API
+- Storage: upload raw images
+- Multiple repositories: Redis, relational database, etc.
+- Improve readiness/healthiness
+- Configure container resources and horizontal scaling
+- Caching mechanism to speed-up reads

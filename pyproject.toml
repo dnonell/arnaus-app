@@ -1,0 +1,21 @@
+[project]
+name = "arnaus-app"
+description = "Arnau's App"
+version = "0.0.1"
+requires-python = ">= 3.13"
+readme = "README.md"
+license = {file = "LICENSE"}
+
+[tool.black]
+line-length = 120
+target-version = ["py313"]
+
+[tool.isort]
+profile = "black"
+src_paths = ["isort", "test"]
+
+[tool.mypy]
+python_version = 3.13
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"

@@ -1,0 +1,77 @@
+name: face-encoding
+
+services:
+  app:
+    build:
+      context: .
+      target: prod
+    ports:
+      - "8080:8080"
+    depends_on:
+      cache:
+        condition: service_started
+      face-encoding:
+        condition: service_started
+    environment:
+      REDIS_DSN: "redis://cache:6379/1"
+      FACE_ENCODING_SVC_URL: "http://localhost:8000"
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+  
+  app-dev:
+    build:
+      context: .
+      target: dev
+    stdin_open: true
+    tty: true
+    ports:
+      - "8080:8080"
+    depends_on:
+      cache:
+        condition: service_started
+      face-encoding:
+        condition: service_started
+    environment:
+      REDIS_DSN: "redis://cache:6379/1"
+      FACE_ENCODING_SVC_URL: "http://localhost:8000"
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /code
+
+  face-encoding:
+    image: "veriffdocker/face-encoding-test-task:latest"
+    ports:
+      - "8000:8000"
+    networks:
+      - default
+
+  cache:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    networks:
+      - default
+    volumes: 
+      - cache:/data
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  cache:
+    driver: local
